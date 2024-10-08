@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import pygame
 import time
+from video_processor import VideoProcessor
 
 # 初始化pygame
 pygame.init()
@@ -26,7 +27,7 @@ fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
 # 警告音频路径
-warning_sound_path = r"D:\yolo\ultralytics\resource\检测到溺水危险.mp3"
+warning_sound_path = VideoProcessor.warning_sound_path
 
 # 加载警告音频
 pygame.mixer.music.load(warning_sound_path)

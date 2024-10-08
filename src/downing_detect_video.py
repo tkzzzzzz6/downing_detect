@@ -3,17 +3,18 @@ import cv2
 import numpy as np
 import pygame
 import time
+from video_processor import VideoProcessor
 
 # 初始化pygame
 pygame.init()
 pygame.mixer.init()
 
 # 加载两个模型
-model_river = YOLO(r"D:\yolo\ultralytics\runs\segment\train16\weights\best.pt")
-model_person = YOLO(r"D:\yolo\ultralytics\runs\detect\train40\weights\best.pt")
+model_river = YOLO(r"model/best_seg.pt")
+model_person = YOLO(r"model/best_detect.pt")
 
 # 打开视频文件
-video_path = r"C:\Users\tk\Videos\序列 04.mp4" # 替换为你的视频文件路径
+video_path = VideoProcessor.video_path
 cap = cv2.VideoCapture(video_path)
 
 # 获取视频的帧率和尺寸
@@ -27,7 +28,7 @@ fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
 # 警告音频路径
-warning_sound_path = r"D:\yolo\ultralytics\resource\检测到溺水危险.mp3"
+warning_sound_path = VideoProcessor.warning_sound_path
 
 # 加载警告音频
 pygame.mixer.music.load(warning_sound_path)
