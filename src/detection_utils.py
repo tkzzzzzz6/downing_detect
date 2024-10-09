@@ -5,6 +5,9 @@ def draw_river_mask(frame, masks):
     height, width = frame.shape[:2]
     river_mask = np.zeros((height, width), dtype=np.uint8)
     
+    if masks is None:
+        return river_mask
+    
     for mask in masks:
         seg = mask.xy[0].astype(np.int32)
         if len(seg) > 0:
@@ -30,7 +33,10 @@ def draw_river_mask(frame, masks):
 def draw_person_boxes(frame, boxes, river_mask):
     height, width = frame.shape[:2]
     person_detected = False
-    max_overlap_ratio = 0
+    person_masks = []
+    
+    if boxes is None or river_mask is None:
+        return person_detected, person_masks
     
     for box in boxes:
         if int(box.cls) == 0:  # 假设 0 是 'person'
@@ -40,13 +46,13 @@ def draw_person_boxes(frame, boxes, river_mask):
             
             person_mask = np.zeros((height, width), dtype=np.uint8)
             cv2.rectangle(person_mask, (b[0], b[1]), (b[2], b[3]), 255, -1)
+            person_masks.append(person_mask)
             
             overlap = cv2.bitwise_and(river_mask, person_mask)
             overlap_ratio = np.sum(overlap) / np.sum(person_mask) if np.sum(person_mask) > 0 else 0
 
             if overlap_ratio > 0.90:
                 person_detected = True
-                max_overlap_ratio = max(max_overlap_ratio, overlap_ratio)
             
             cv2.rectangle(frame, (b[0], b[1]), (b[2], b[3]), (0, 255, 0), 2)
             
@@ -54,7 +60,7 @@ def draw_person_boxes(frame, boxes, river_mask):
             cv2.rectangle(frame, (b[0], b[1] - text_size[1] - 10), (b[0] + text_size[0], b[1]), (0, 255, 0), -1)
             cv2.putText(frame, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
     
-    return person_detected, max_overlap_ratio
+    return person_detected, person_masks
 
 def draw_warning(frame):
     height, width = frame.shape[:2]
@@ -82,3 +88,8 @@ def draw_info(frame, info_message):
 
     cv2.rectangle(frame, (text_x, text_y - text_size[1] - 10), (text_x + text_size[0], text_y + 10), (0, 0, 0), -1)
     cv2.putText(frame, info_message, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (255, 255, 255), thickness)
+
+def calculate_overlap_ratio(person_mask, river_mask):
+    overlap = cv2.bitwise_and(river_mask, person_mask)
+    overlap_ratio = np.sum(overlap) / np.sum(person_mask) if np.sum(person_mask) > 0 else 0
+    return overlap_ratio

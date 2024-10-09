@@ -1,14 +1,20 @@
 import cv2
 import time
 from src.model_loader import ModelLoader
-from src.detection_utils import draw_river_mask, draw_person_boxes, draw_warning, draw_info
+from src.detection_utils import draw_river_mask, draw_person_boxes, draw_warning, draw_info, calculate_overlap_ratio
 from src.audio_manager import AudioManager
 
 class VideoProcessor:
-    def __init__(self, video_path, output_path, warning_sound_path):
-        self.video_path = video_path
+    def __init__(self, video_source, output_path, warning_sound_path, is_webcam=False):
+        self.video_source = video_source
         self.output_path = output_path
-        self.cap = cv2.VideoCapture(video_path)
+        self.is_webcam = is_webcam
+        
+        if self.is_webcam:
+            self.cap = cv2.VideoCapture(0)
+        else:
+            self.cap = cv2.VideoCapture(video_source)
+        
         self.fps = int(self.cap.get(cv2.CAP_PROP_FPS))
         self.width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -30,7 +36,10 @@ class VideoProcessor:
         while True:
             ret, frame = self.cap.read()
             if not ret:
-                break
+                if self.is_webcam:
+                    continue
+                else:
+                    break
 
             current_time = time.time()
 
@@ -39,16 +48,27 @@ class VideoProcessor:
 
             annotated_frame = frame.copy()
             
-            river_mask = draw_river_mask(annotated_frame, results_river[0].masks)
-            person_detected, overlap_ratio = draw_person_boxes(annotated_frame, results_person[0].boxes, river_mask)
+            # 确保 river_mask 被创建，即使没有检测到河流
+            river_mask = draw_river_mask(annotated_frame, results_river[0].masks if results_river[0].masks is not None else None)
+            
+            # 确保传递 river_mask，即使它可能是空的
+            person_detected, person_masks = draw_person_boxes(annotated_frame, 
+                                                              results_person[0].boxes if results_person[0].boxes is not None else None, 
+                                                              river_mask)
 
-            if person_detected:
+            max_overlap_ratio = 0
+            if person_detected and person_masks:
+                for person_mask in person_masks:
+                    overlap_ratio = calculate_overlap_ratio(person_mask, river_mask)
+                    max_overlap_ratio = max(max_overlap_ratio, overlap_ratio)
+
+            if max_overlap_ratio > 0.90:
                 self.last_detection_time = current_time
                 if not self.warning_active:
                     self.warning_active = True
                     self.warning_start_time = current_time
                     self.audio_manager.play_warning()
-                    self.info_message = f"Warning: Drowning danger detected! Overlap ratio: {overlap_ratio:.2f}"
+                    self.info_message = f"警告：检测到溺水危险！重叠比例：{max_overlap_ratio:.2f}"
 
             if self.warning_active:
                 draw_warning(annotated_frame)
