@@ -2,10 +2,9 @@ import cv2
 import time
 from src.model_loader import ModelLoader
 from src.detection_utils import draw_river_mask, draw_person_boxes, draw_warning, draw_info, calculate_overlap_ratio
-from src.audio_manager import AudioManager
 
 class VideoProcessor:
-    def __init__(self, video_source, output_path, warning_sound_path, is_webcam=False):
+    def __init__(self, video_source, output_path, is_webcam=False):
         self.video_source = video_source
         self.output_path = output_path
         self.is_webcam = is_webcam
@@ -23,7 +22,6 @@ class VideoProcessor:
         self.out = cv2.VideoWriter(output_path, fourcc, self.fps, (self.width, self.height))
         
         self.model_loader = ModelLoader()
-        self.audio_manager = AudioManager(warning_sound_path)
         
         self.warning_active = False
         self.last_detection_time = 0
@@ -48,10 +46,7 @@ class VideoProcessor:
 
             annotated_frame = frame.copy()
             
-            # 确保 river_mask 被创建，即使没有检测到河流
             river_mask = draw_river_mask(annotated_frame, results_river[0].masks if results_river[0].masks is not None else None)
-            
-            # 确保传递 river_mask，即使它可能是空的
             person_detected, person_masks = draw_person_boxes(annotated_frame, 
                                                               results_person[0].boxes if results_person[0].boxes is not None else None, 
                                                               river_mask)
@@ -67,21 +62,18 @@ class VideoProcessor:
                 if not self.warning_active:
                     self.warning_active = True
                     self.warning_start_time = current_time
-                    self.audio_manager.play_warning()
-                    self.info_message = f"警告：检测到溺水危险！重叠比例：{max_overlap_ratio:.2f}"
+                    self.info_message = f"Warning: Drowning danger detected! Overlap ratio: {max_overlap_ratio:.2f}"
 
             if self.warning_active:
                 draw_warning(annotated_frame)
 
                 if current_time - self.last_detection_time > self.detection_window:
                     self.warning_active = False
-                    self.audio_manager.stop_warning()
-                    self.info_message = "Warning deactivated: Exceeded detection window time"
+                    self.info_message = "Warning cleared: Detection window time exceeded"
             
             if self.warning_active and current_time - self.warning_start_time > self.warning_duration:
                 self.warning_active = False
-                self.audio_manager.stop_warning()
-                self.info_message = "Warning deactivated: Exceeded warning duration"
+                self.info_message = "Warning cleared: Warning duration exceeded"
 
             draw_info(annotated_frame, self.info_message)
 
@@ -98,4 +90,3 @@ class VideoProcessor:
         self.cap.release()
         self.out.release()
         cv2.destroyAllWindows()
-        self.audio_manager.cleanup()
