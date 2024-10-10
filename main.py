@@ -14,12 +14,15 @@ def main():
             output_path = "output/output_video.mp4"
             processor = VideoProcessor(video_path, output_path)
             processor.process_video()
+            print("视频处理完成。输出文件保存在:", output_path)
             break
         
         elif choice == '2':
+            print("警告: 在无图形界面环境中，虚拟摄像头检测可能无法正常工作。")
             webcam_output_path = "output/webcam_output.mp4"
             webcam_processor = VideoProcessor(0, webcam_output_path, is_webcam=True)
             webcam_processor.process_video()
+            print("视频处理完成。输出文件保存在:", webcam_output_path)
             break
         
         else:
