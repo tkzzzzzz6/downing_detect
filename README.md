@@ -80,13 +80,6 @@
 ```
 DOWNING_DETECT/
 │
-├── _pycache_/
-│   ├── audio_manager.cpython-38.pyc
-│   ├── detection_utils.cpython-38.pyc
-│   ├── model_loader.cpython-38.pyc
-│   ├── video_processor.cpython-38.pyc
-│   └── video_processor.cpython-312.pyc
-│
 ├── model/
 │   ├── best_detect.pt
 │   └── best_seg.pt
@@ -99,7 +92,6 @@ DOWNING_DETECT/
 │   └── 检测到溺水危险.mp3
 │
 ├── src/
-│   ├── _pycache_/
 │   ├── __init__.py
 │   ├── audio_manager.py
 │   ├── detection_utils.py
@@ -117,7 +109,6 @@ DOWNING_DETECT/
 
 这个结构展示了项目的主要组成部分：
 
-- `_pycache_/`: Python 的字节码缓存目录。
 - `model/`: 存放模型文件。
 - `output/`: 存放输出视频。
 - `resource/`: 存放音频资源文件。
