@@ -1,0 +1,96 @@
+incident_output_dir: output/incidents
+
+logging:
+  level: INFO  # 日志级别: TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, CRITICAL
+  console_level: DEBUG  # 可选，控制台日志级别（默认同 level）
+  log_dir: logs  # 日志文件目录
+  file_pattern: "app_{time:YYYY-MM-DD}.log"  # 日志文件名模式
+  rotation: "10 MB"  # 日志轮转策略: "10 MB", "500 KB", "1 day", "1 week"
+  retention: "7 days"  # 日志保留时间: "7 days", "1 week", "1 month"
+
+email:
+  smtp_server: smtp.example.com
+  smtp_port: 465
+  username: bot@example.com
+  password: your-password
+  sender: bot@example.com
+  recipients:
+    - staff@example.com
+  use_tls: true
+
+vlm:
+  provider: qwen
+  model: qwen-vl-plus
+  api_key: <你的DashScope API Key>
+  base_url: https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generate
+  prompt_template: "请用50字以内描述画面中的溺水风险、人物位置与环境。"
+  timeout: 15
+  max_retries: 2
+
+# vlm:
+#   provider: qwen
+#   model: qwen-vl-flash
+#   api_key: cdiFza6yY0ElrY693C4GBHnzpPeBK0
+#   base_url: https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generate
+#   prompt_template: "
+#     背景：前置物体检测系统在【自然河道/水域环境】中标记了疑似溺水或落水的人员。
+#     任务：请作为专业救援观察员进行二次确认，并提取救援所需的关键视觉信息。
+    
+#     请仔细观察画面，并仅返回一个识别信息，严格包含以下字段：
+    
+#     1. 'risk_assessment' (风险评估):
+#        - 'level': 必须是 '高危'、'疑似' 或 '误报(钓鱼/岸边玩耍/正常游泳)' 之一。
+#        - 'reason': 简述判断理由 (例如：身穿常服在水中挣扎 / 身体随水流漂浮无意识 / 仅是在岸边钓鱼或洗手)。
+       
+#     2. 'rescue_guide' (救援指引 - 仅在非误报时填写):
+#        - 'location': 请综合以下三个维度进行详细描述：
+#           (1) 水域分区：(如：河道正中心激流区 / 靠近左岸回水湾 / 桥墩下游盲区)。
+#           (2) 距离估算：(如：距离最近的岸边约 5-10 米)。
+#           (3) 关键地标：(如：正对岸边的石台阶 / 位于红色警示牌正下方 / 靠近右侧的枯树枝)。
+#        - 'features': 描述最显眼的外观特征 (例如：身穿白色短袖和深色长裤，无救生衣等)。
+#        - 'posture': 当前姿态 (例如：头部在大力浮沉 / 面部朝下随波逐流 / 抓住漂浮物)。
+       
+#     3. 'email_snippet' (邮件摘要):
+#        - 生成一个用于邮件标题的短语 (例如：【紧急】河道中心-白衣落水者-已被冲走)。
+
+#     请注意：
+#     1. 如果看到人物站在岸上或仅仅是在水边活动（如钓鱼、洗衣服），请务必判定为 '误报'。
+#     2. 如果看到身穿完整长衣长裤在水中，请优先判定为 '高危'。
+#     1. 描述位置时，'左/右'是指【监控画面视角】的左/右。
+#     2. 只有看到人物确实在水体内部且状态异常时才报警，站在干岸上属于误报。"
+#   timeout: 15
+#   max_retries: 2
+
+# vlm:
+#   provider: ollama
+#   model: "qwen3-vl:235b-cloud"
+#   api_key:
+#   base_url: "http://localhost:11434/api/generate"
+#   prompt_template: "
+#     背景：前置物体检测系统在【自然河道/水域环境】中标记了疑似溺水或落水的人员。
+#     任务：请作为专业救援观察员进行二次确认，并提取救援所需的关键视觉信息。
+    
+#     请仔细观察画面，并仅返回一个识别信息，严格包含以下字段：
+    
+#     1. 'risk_assessment' (风险评估):
+#        - 'level': 必须是 '高危'、'疑似' 或 '误报(钓鱼/岸边玩耍/正常游泳)' 之一。
+#        - 'reason': 简述判断理由 (例如：身穿常服在水中挣扎 / 身体随水流漂浮无意识 / 仅是在岸边钓鱼或洗手)。
+       
+#     2. 'rescue_guide' (救援指引 - 仅在非误报时填写):
+#        - 'location': 请综合以下三个维度进行详细描述：
+#           (1) 水域分区：(如：河道正中心激流区 / 靠近左岸回水湾 / 桥墩下游盲区)。
+#           (2) 距离估算：(如：距离最近的岸边约 5-10 米)。
+#           (3) 关键地标：(如：正对岸边的石台阶 / 位于红色警示牌正下方 / 靠近右侧的枯树枝)。
+#        - 'features': 描述最显眼的外观特征 (例如：身穿白色短袖和深色长裤，无救生衣等)。
+#        - 'posture': 当前姿态 (例如：头部在大力浮沉 / 面部朝下随波逐流 / 抓住漂浮物)。
+       
+#     3. 'email_snippet' (邮件摘要):
+#        - 生成一个用于邮件标题的短语 (例如：【紧急】河道中心-白衣落水者-已被冲走)。
+
+#     请注意：
+#     1. 如果看到人物站在岸上或仅仅是在水边活动（如钓鱼、洗衣服），请务必判定为 '误报'。
+#     2. 如果看到身穿完整长衣长裤在水中，请优先判定为 '高危'。
+#     1. 描述位置时，'左/右'是指【监控画面视角】的左/右。
+#     2. 只有看到人物确实在水体内部且状态异常时才报警，站在干岸上属于误报。"
+#   timeout: 15
+#   max_retries: 2
