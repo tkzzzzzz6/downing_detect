@@ -166,7 +166,7 @@ uv sync --reinstall
 
 ### 2. 端口被占用
 
-Web 后端默认使用 8000 端口，前端使用 3000 端口。修改方法：
+Web 后端默认使用 8001 端口，前端使用 3000 端口。修改方法：
 
 ```bash
 # 后端
@@ -192,8 +192,8 @@ uv add torch torchvision --index-url https://download.pytorch.org/whl/cu118
 ## 📊 API 文档
 
 Web 模式启动后，访问：
-- **API 文档**: http://127.0.0.1:8000/docs
-- **健康检查**: http://127.0.0.1:8000/health
+- **API 文档**: http://127.0.0.1:8001/docs
+- **健康检查**: http://127.0.0.1:8001/health
 - **前端界面**: http://localhost:3000
 
 ## 🎓 学习路径

@@ -50,7 +50,7 @@ uv run test_imports.py
 **检查**:
 ```bash
 # 访问后端健康检查
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8001/health
 ```
 
 **解决**:
@@ -66,11 +66,11 @@ uv run backend/api.py
 **解决**:
 ```bash
 # Windows
-netstat -ano | findstr :8000
+netstat -ano | findstr :8001
 taskkill /PID <进程ID> /F
 
 # Linux/Mac
-lsof -i :8000
+lsof -i :8001
 kill -9 <进程ID>
 ```
 
@@ -167,7 +167,7 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 #### 2. 防火墙设置
 
-确保防火墙允许 WebSocket 连接（端口 8000）
+确保防火墙允许 WebSocket 连接（端口 8001）
 
 #### 3. 代理问题
 
@@ -260,12 +260,12 @@ ollama run llava
 ### 无法连接后端
 
 **检查**:
-1. 后端是否在运行（http://127.0.0.1:8000/health）
+1. 后端是否在运行（http://127.0.0.1:8001/health）
 2. 前端 API 配置是否正确（`frontend/src/services/api.ts`）
 
 **解决**: 确保 `BACKEND_URL` 正确：
 ```typescript
-const BACKEND_URL = 'http://127.0.0.1:8000';
+const BACKEND_URL = 'http://127.0.0.1:8001';
 ```
 
 ### Electron 无法启动后端
@@ -325,10 +325,10 @@ uv run test/test_camera.py
 
 ```bash
 # 后端健康检查
-curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8001/health
 
 # API 文档
-open http://127.0.0.1:8000/docs
+open http://127.0.0.1:8001/docs
 ```
 
 ### 4. 常用命令

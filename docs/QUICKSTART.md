@@ -92,7 +92,7 @@ uv run api.py
 
 等待看到：
 ```
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
 ```
 
 #### 终端2 - 前端
@@ -115,10 +115,10 @@ npm run electron-dev
 
 ## 验证安装
 
-1. 后端健康检查：访问 `http://127.0.0.1:8000/health`
+1. 后端健康检查：访问 `http://127.0.0.1:8001/health`
    应该看到：`{"status":"healthy","message":"Backend service is running"}`
 
-2. API 文档：访问 `http://127.0.0.1:8000/docs`
+2. API 文档：访问 `http://127.0.0.1:8001/docs`
    应该看到 Swagger UI 界面
 
 3. 前端界面：访问 `http://localhost:3000`
@@ -161,7 +161,7 @@ uv sync --reinstall
 **错误**：前端显示「连接失败」
 
 **解决**：
-1. 确认后端已启动：访问 `http://127.0.0.1:8000/health`
+1. 确认后端已启动：访问 `http://127.0.0.1:8001/health`
 2. 检查防火墙设置
 3. 查看后端终端的错误信息
 
@@ -199,6 +199,6 @@ uv sync --reinstall
 如果遇到问题，请检查：
 1. 后端日志：`logs/` 目录
 2. 浏览器控制台：按 F12 查看
-3. 后端 API 文档：`http://127.0.0.1:8000/docs`
+3. 后端 API 文档：`http://127.0.0.1:8001/docs`
 
 祝使用愉快！

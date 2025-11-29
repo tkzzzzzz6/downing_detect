@@ -5,7 +5,7 @@ const axios = require('axios');
 
 let mainWindow = null;
 let pythonProcess = null;
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 8001;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 
 /**

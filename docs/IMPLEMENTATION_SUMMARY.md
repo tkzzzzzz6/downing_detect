@@ -156,7 +156,7 @@ npm run electron-dev
 
 #### 3. 测试 API
 
-访问 `http://127.0.0.1:8000/docs` 查看 Swagger UI 并测试 API。
+访问 `http://127.0.0.1:8001/docs` 查看 Swagger UI 并测试 API。
 
 ### 需要注意的事项
 
@@ -302,7 +302,7 @@ CLI 模式和 Web 模式共享核心代码（现在位于 `backend/core/`），�
 在发布前，建议测试以下功能：
 
 - [ ] 后端服务正常启动
-- [ ] API 文档可访问（http://127.0.0.1:8000/docs）
+- [ ] API 文档可访问（http://127.0.0.1:8001/docs）
 - [ ] WebSocket 连接成功
 - [ ] 启动检测（视频文件）
 - [ ] 启动检测（摄像头）

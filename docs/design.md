@@ -37,7 +37,7 @@
 └────────────────────┼───────────────────────────────────────┘
                      │
                      │ HTTP REST API / WebSocket
-                     │ http://127.0.0.1:8000
+                     │ http://127.0.0.1:8001
                      │
 ┌────────────────────▼───────────────────────────────────────┐
 │              FastAPI Backend Service                        │
@@ -433,7 +433,7 @@ const DetectionPage: React.FC<DetectionPageProps> = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
   
   const handleStart = async () => {
-    const response = await fetch('http://127.0.0.1:8000/api/detection/start', {
+    const response = await fetch('http://127.0.0.1:8001/api/detection/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ video_source: videoSource })
@@ -446,7 +446,7 @@ const DetectionPage: React.FC<DetectionPageProps> = () => {
   };
   
   const connectWebSocket = () => {
-    const websocket = new WebSocket('ws://127.0.0.1:8000/ws');
+    const websocket = new WebSocket('ws://127.0.0.1:8001/ws');
     
     websocket.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -487,7 +487,7 @@ const axios = require('axios');
 
 let mainWindow = null;
 let pythonProcess = null;
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = 8001;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
 
 // Start Python backend
@@ -923,7 +923,7 @@ try {
    ```bash
    # 后端
    cd backend
-   uvicorn api:app --reload --port 8000
+   uvicorn api:app --reload --port 8001
    
    # 前端
    cd frontend
