@@ -139,7 +139,7 @@ def main():
     uvicorn.run(
         app,
         host="127.0.0.1",
-        port=8000,
+        port=8001,
         log_level="info",
         access_log=True,
         timeout_graceful_shutdown=3  # Wait max 3 seconds for graceful shutdown

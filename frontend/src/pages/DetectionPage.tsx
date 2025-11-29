@@ -29,7 +29,7 @@ import {
   CheckCircle,
   Refresh
 } from '@mui/icons-material';
-import apiClient from '../services/api';
+import apiClient, { BACKEND_URL } from '../services/api';
 
 interface DetectionStatus {
   status: string;
@@ -73,16 +73,20 @@ const DetectionPage: React.FC = () => {
     }
   }, [sourceType]);
 
-  // Start preview when camera is selected
+  // Start/stop preview when camera selection or detection status changes
   useEffect(() => {
-    if (sourceType === 'webcam' && cameras.length > 0 && !status?.status) {
+    const detectionRunning = status?.status === 'running';
+
+    if (sourceType === 'webcam' && cameras.length > 0 && !detectionRunning) {
       startCameraPreview(selectedCamera);
+    } else {
+      stopCameraPreview();
     }
 
     return () => {
       stopCameraPreview();
     };
-  }, [selectedCamera, sourceType]);
+  }, [selectedCamera, sourceType, status?.status, cameras.length]);
 
   // Poll detection status
   useEffect(() => {
@@ -100,6 +104,8 @@ const DetectionPage: React.FC = () => {
 
   // WebSocket handlers
   useEffect(() => {
+    apiClient.connectWebSocket();
+
     const handleFrame = (data: any) => {
       if (data.image) {
         setCurrentFrame(data.image);
@@ -136,13 +142,14 @@ const DetectionPage: React.FC = () => {
       apiClient.offWebSocketMessage('alert', handleAlert);
       apiClient.offWebSocketMessage('status', handleStatus);
       apiClient.offWebSocketMessage('error', handleError);
+      apiClient.disconnectWebSocket();
     };
   }, []);
 
   const loadCameras = async () => {
     setLoadingCameras(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/camera/list');
+      const response = await fetch(`${BACKEND_URL}/api/camera/list`);
       const data = await response.json();
       setCameras(data.cameras || []);
       if (data.cameras && data.cameras.length > 0) {
@@ -162,7 +169,7 @@ const DetectionPage: React.FC = () => {
 
     try {
       // Start preview on backend
-      await fetch(`http://127.0.0.1:8000/api/camera/preview/start/${cameraIndex}`, {
+      await fetch(`${BACKEND_URL}/api/camera/preview/start/${cameraIndex}`, {
         method: 'POST'
       });
 
@@ -171,7 +178,7 @@ const DetectionPage: React.FC = () => {
       // Start polling for preview frames
       previewIntervalRef.current = setInterval(async () => {
         try {
-          const response = await fetch(`http://127.0.0.1:8000/api/camera/preview/frame/${cameraIndex}`);
+          const response = await fetch(`${BACKEND_URL}/api/camera/preview/frame/${cameraIndex}`);
           const data = await response.json();
           if (data.image) {
             setPreviewImage(data.image);
@@ -194,7 +201,7 @@ const DetectionPage: React.FC = () => {
 
     if (previewActive && selectedCamera !== null) {
       try {
-        await fetch(`http://127.0.0.1:8000/api/camera/preview/stop/${selectedCamera}`, {
+        await fetch(`${BACKEND_URL}/api/camera/preview/stop/${selectedCamera}`, {
           method: 'POST'
         });
       } catch (err) {
@@ -212,7 +219,7 @@ const DetectionPage: React.FC = () => {
 
     // Stop preview when starting detection
     if (sourceType === 'webcam') {
-      stopCameraPreview();
+      await stopCameraPreview();
     }
 
     try {

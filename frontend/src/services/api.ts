@@ -3,7 +3,7 @@
  */
 import axios, { AxiosInstance } from 'axios';
 
-const BACKEND_URL = 'http://127.0.0.1:8000';
+export const BACKEND_URL = 'http://127.0.0.1:8001';
 
 class APIClient {
   private client: AxiosInstance;
@@ -80,7 +80,7 @@ class APIClient {
       this.ws.close();
     }
 
-    this.ws = new WebSocket(`ws://127.0.0.1:8000/ws`);
+    this.ws = new WebSocket(`${BACKEND_URL.replace('http', 'ws')}/ws`);
 
     this.ws.onopen = () => {
       console.log('WebSocket connected');

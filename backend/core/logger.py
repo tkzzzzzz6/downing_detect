@@ -185,15 +185,20 @@ def log_detection_stop(session_id: str, frame_count: int, elapsed_time: float):
         logger.info(f"  Average FPS   : {fps:.2f}")
 
 
-def log_video_info(fps: float, width: int, height: int, total_frames: int):
+from typing import Optional
+
+
+def log_video_info(fps: float, width: int, height: int, total_frames: Optional[int]):
     """视频信息日志"""
     logger.info("Video Information:")
     logger.info(f"  Resolution    : {width} x {height}")
     logger.info(f"  Frame Rate    : {fps:.2f} FPS")
-    if total_frames > 0:
+    if total_frames is not None and total_frames > 0:
         logger.info(f"  Total Frames  : {total_frames:,}")
         duration = total_frames / fps if fps > 0 else 0
         logger.info(f"  Duration      : {duration:.2f} seconds")
+    elif total_frames is None:
+        logger.info("  Total Frames  : N/A (live stream)")
 
 
 def log_drowning_alert(frame_id: int, overlap_ratio: float, incident_id: str = None):
