@@ -6,7 +6,9 @@
 
 ## 项目演示
 
-![Demo GIF](Demo_Video/Demo_01.gif)
+<!--![Demo GIF](Demo_Video/Demo_01.gif) -->
+
+![Demo_01.gif](https://tk-pichost-1325224430.cos.ap-chengdu.myqcloud.com/blog/Demo_01.gif)
 
 演示视频来源: <https://www.bilibili.com/video/BV1JVsxe4EJR/?spm_id_from=333.337.search-card.all.click>
 
